@@ -1,0 +1,35 @@
+@startuml
+!pragma layout smetana
+title COLORS - Use Case Diagram
+left to right direction
+
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam defaultFontName "DejaVu Sans"
+skinparam ArrowColor #64748B
+skinparam actorBorderColor #334155
+skinparam actorFontColor #0F172A
+skinparam usecaseBackgroundColor #EFF6FF
+skinparam usecaseBorderColor #2563EB
+skinparam usecaseFontColor #1E3A8A
+skinparam rectangleBorderColor #94A3B8
+skinparam rectangleBackgroundColor #F8FAFC
+
+actor "Visitor" as Visitor
+actor "Logged-in User" as Member
+Visitor <|-- Member
+
+rectangle "COLORS Web Application" {
+  usecase "Log in" as Login
+  usecase "Add a color" as Add
+  usecase "Search my colors" as Search
+  usecase "View matching colors" as View
+  usecase "Log out" as Logout
+}
+
+Visitor --> Login
+Member --> Add
+Member --> Search
+Member --> Logout
+View ..> Search : <<extend>>\n[matching colors returned]
+@enduml

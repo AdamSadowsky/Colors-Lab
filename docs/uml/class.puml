@@ -1,0 +1,85 @@
+@startuml
+!pragma layout smetana
+title COLORS - Structural Class Diagram
+left to right direction
+
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam defaultFontName "DejaVu Sans"
+skinparam ArrowColor #64748B
+skinparam classBackgroundColor #F8FAFC
+skinparam classBorderColor #334155
+skinparam classFontColor #0F172A
+skinparam classAttributeIconSize 0
+skinparam packageBackgroundColor #FFFFFF
+skinparam packageBorderColor #CBD5E1
+
+package "Browser" {
+  class "code.js" as Client <<JavaScript module>> {
+    userId : number
+    firstName : string
+    lastName : string
+    --
+    + doLogin()
+    + saveCookie()
+    + readCookie()
+    + doLogout()
+    + addColor()
+    + searchColor()
+  }
+}
+
+package "PHP API (LAMPAPI)" {
+  class "Login.php" as LoginApi <<endpoint script>> {
+    + getRequestInfo()
+    + returnWithInfo(...)
+    + returnWithError(...)
+  }
+  class "AddColor.php" as AddApi <<endpoint script>> {
+    + getRequestInfo()
+    + returnWithError(...)
+  }
+  class "SearchColors.php" as SearchApi <<endpoint script>> {
+    + getRequestInfo()
+    + returnWithInfo(...)
+    + returnWithError(...)
+  }
+}
+
+package "MySQL (COP4331)" {
+  class "Users" as Users <<database table>> {
+    + ID : integer
+    + firstName : text
+    + lastName : text
+    + Login : text
+    + Password : text
+  }
+  class "Colors" as Colors <<database table>> {
+    + ID : integer
+    + Name : text
+    + UserID : integer
+  }
+}
+
+Client ..> LoginApi : POST login, password
+Client ..> AddApi : POST color, userId
+Client ..> SearchApi : POST search, userId
+
+LoginApi ..> Users : SELECT by credentials
+AddApi ..> Colors : INSERT (UserID, Name)
+SearchApi ..> Colors : SELECT Name\nLIKE search AND UserID
+
+Users "1" -- "0..*" Colors : logical owner via UserID
+
+note bottom of Client
+  This is a structural UML representation:
+  code.js and the PHP scripts use procedural
+  functions, not declared OO classes.
+end note
+
+note bottom of Colors
+  UserID links each color to a user in the
+  application queries. A database foreign-key
+  constraint is not asserted here.
+end note
+@enduml

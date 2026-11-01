@@ -1,0 +1,54 @@
+@startuml
+title COLORS - Login and Color Management Activity
+
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam defaultFontName "DejaVu Sans"
+skinparam activityBackgroundColor #EFF6FF
+skinparam activityBorderColor #2563EB
+skinparam activityFontColor #1E293B
+skinparam activityDiamondBackgroundColor #DBEAFE
+skinparam activityDiamondBorderColor #2563EB
+skinparam ArrowColor #64748B
+
+start
+:User enters login and password on index.html;
+:JavaScript doLogin() POSTs to Login.php;
+:PHP queries MySQL Users by Login and Password;
+if (Matching user?) then (yes)
+  :PHP returns user ID and names;
+  :JavaScript saves a 20-minute cookie;
+  :Browser opens color.html and calls readCookie();
+  if (Cookie contains a user ID?) then (yes)
+    :User chooses an action;
+    if (Add color?) then (yes)
+      :Enter color name;
+      :JavaScript POSTs color and userId to AddColor.php;
+      :PHP INSERTs (UserID, Name) into Colors;
+      :Browser displays add confirmation on HTTP 200;
+    else (no)
+      if (Search colors?) then (yes)
+        :Enter search text;
+        :JavaScript POSTs search and userId to SearchColors.php;
+        :PHP SELECTs Colors by userId and partial name;
+        if (Matching colors?) then (yes)
+          :PHP returns JSON results array;
+          :Browser displays matching color names;
+        else (no)
+          :PHP returns No Records Found error JSON;
+          :Client expects results[];\nno dedicated no-results handling;
+        endif
+      else (Log out)
+        :JavaScript clears cookie and user state;
+        :Browser redirects to index.html;
+      endif
+    endif
+  else (no)
+    :Browser redirects to index.html;
+  endif
+else (no)
+  :PHP returns id=0 and error;
+  :Browser displays incorrect credentials message;
+endif
+stop
+@enduml
