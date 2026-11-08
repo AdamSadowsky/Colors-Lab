@@ -1,0 +1,22 @@
+name: Automated Linting
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+        - name: Checkout repository
+          uses: actions/checkout@v6
+    
+        - name: Super-Linter
+          uses: super-linter/super-linter@v7.1.0
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            VALIDATE_HTML: true
+            VALIDATE_CSS: true
+            VALIDATE_JAVASCRIPT_ES: true
+            VALIDATE_ALL_CODEBASE: true
