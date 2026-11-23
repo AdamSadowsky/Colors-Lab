@@ -26,3 +26,52 @@ jobs:
             VALIDATE_CSS: true
             VALIDATE_JAVASCRIPT_ES: true
             VALIDATE_ALL_CODEBASE: true
+
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: testpass
+          MYSQL_DATABASE: colors_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -ptestpass"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mysqli
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup database
+        run: |
+          mysql -h 127.0.0.1 -uroot -ptestpass colors_test -e "CREATE TABLE Colors (UserId INT, Name VARCHAR(255));"
+          sudo mkdir -p /var/www
+          printf '%s\n' '<?php' '$dbHost = "127.0.0.1";' '$dbUser = "root";' '$dbPassword = "testpass";' '$dbName = "colors_test";' | sudo tee /var/www/db_config.php > /dev/null
+
+      - name: Start PHP server
+        run: |
+          php -S 127.0.0.1:8000 -t . > /tmp/php-server.log 2>&1 &
+          sleep 2
+
+      - name: Run tests
+        run: npm test

@@ -1,0 +1,29 @@
+{
+  "name": "lamp-stack",
+  "version": "1.0.0",
+  "description": "COLORS is a simple web application created using the LAMP stack. The application allows a user to log in and manage color entries associated with their account.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest"
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdamSadowsky/Colors-Lab.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AdamSadowsky/Colors-Lab/issues"
+  },
+  "homepage": "https://github.com/AdamSadowsky/Colors-Lab#readme",
+  "devDependencies": {
+    "jest": "^30.5.2",
+    "jest-environment-jsdom": "^30.5.2"
+  }
+}
