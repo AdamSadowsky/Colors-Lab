@@ -181,5 +181,8 @@ function searchColor()
 	{
 		document.getElementById("colorSearchResult").innerHTML = err.message;
 	}
-	
+}
+
+if(typeof module != "undefined") {
+	module.exports = { doLogout }
 }
